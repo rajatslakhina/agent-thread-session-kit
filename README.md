@@ -4,7 +4,9 @@
 
 ![Swift 6](https://img.shields.io/badge/Swift-6.0-orange) ![Platforms](https://img.shields.io/badge/platforms-iOS%2017%20·%20macOS%2014%20·%20Linux%20(core)-blue) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-Demo app: (added after the companion repo is pushed — see below)
+[![CI](https://github.com/rajatslakhina/agent-thread-session-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/rajatslakhina/agent-thread-session-kit/actions/workflows/ci.yml)
+
+**Demo app:** [agent-thread-session-demo-app](https://github.com/rajatslakhina/agent-thread-session-demo-app) — an iOS app that consumes this package from GitHub (pinned to 1.0.0) and runs it through sleep, a paused clock, keep-warm, eviction and a network handoff.
 
 ---
 
@@ -134,8 +136,10 @@ await session.snapshot() // phase, liveness, per-request telemetry, stats
   - anchor kept after a rollback;
   - `rehydrating` sticking after a failed turn;
   - ping allowed on a rewritten (redacted) prefix.
-- **Simulator:** see the demo repo. The app ran on an iPhone Duo Simulator (iOS 27.2) in four scripted scenarios plus a live background cycle.
-- **CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) defines a Linux `swift:6.0` job (build + test, warnings as errors) and a `macos-15` job (tests + generic iOS Simulator build). Results are reported once it has run on GitHub.
+- **Simulator:** see the demo repo. The app ran on an iPhone Duo Simulator (iOS 27.2) in four scripted scenarios plus a live background cycle. After publishing, the unmodified demo project resolved this package from GitHub at 1.0.0, built, and ran the `handoff` scenario on the Simulator.
+- **CI ([Actions](https://github.com/rajatslakhina/agent-thread-session-kit/actions/workflows/ci.yml)): green on `main` and on the `v1.0.0` tag.**
+  - The Linux `swift:6.0` job builds and tests with warnings as errors: 64 tests pass.
+  - The `macos-15` job runs 71 tests (64 core + 7 console-script) and the generic iOS Simulator build: `BUILD SUCCEEDED`.
 - **What this does not verify:** no request in this repo reaches the real Messages API. Every number above and in the demo comes from `SimulatedThreadServer`, whose TTFT is *modelled* (`LatencyModel`), not measured, and whose keep-warm is a modelled two-message exchange. Before you tune `LatencyModel`, `TTLPolicy` or the break-even against real traffic, fit them from your relay's own telemetry.
 
 ## License
