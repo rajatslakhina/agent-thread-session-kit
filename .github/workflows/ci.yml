@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  linux:
+    name: Linux · Swift 6.0 · warnings as errors
+    runs-on: ubuntu-latest
+    container: swift:6.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (clean, warnings as errors)
+        run: swift build -Xswiftc -warnings-as-errors
+      - name: Test
+        run: swift test -Xswiftc -warnings-as-errors
+
+  apple:
+    name: macOS · tests + iOS Simulator build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test (macOS, includes the SwiftUI module)
+        run: swift test -Xswiftc -warnings-as-errors
+      - name: Build for iOS Simulator (compile-only, no device needed)
+        run: |
+          set -o pipefail
+          xcodebuild build -scheme ThreadSessionKit-Package \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipPackagePluginValidation | tail -n 20
